@@ -1,12 +1,7 @@
-@font-face {
-    font-family: "my font";
-    src: url("/fonts/pkmn_r.ttf") format("truetype");
-}
-
 h1 {
     background-color: aqua;
 }
 
 p {
-    font-family: "my font";
+    font-family: 'Kosugi Maru', sans-serif;
 }
