@@ -1,6 +1,6 @@
 @font-face {
     font-family: "my font";
-    src: url(/fonts/pkmn_r.ttf);
+    src: url("/fonts/pkmn_r.ttf") format("truetype");
 }
 
 h1 {
