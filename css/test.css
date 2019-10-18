@@ -1,9 +1,8 @@
-h1 {
-    background-color: aqua;
-    font-family: 'Kosugi Maru', sans-serif;
-    font-family: 'Permanent Marker', cursive;
-}
-
-p {
-    font-family: 'Kosugi Maru', sans-serif;
-}
+.container {
+    width: 80%;
+    margin: 15px auto;
+  }
+  
+  #caption{
+    margin-left: 25px;
+  }
