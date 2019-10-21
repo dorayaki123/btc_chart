@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/* メニューバー */
 #column1 {
   border: 1px solid #bd1515;
   background-color: #ffc5c5;
@@ -18,4 +19,9 @@
 #column4 {
   border: 1px solid #58b300;
   background-color: #c5f09b;
+}
+
+/* メインコンテンツ */
+.container-fluid {
+  background-image: url("../img/013_53a2db488d2d5e9ac76d1b9239d9b603.gif");
 }
