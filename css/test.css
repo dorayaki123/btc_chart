@@ -1,27 +1,52 @@
 @charset "UTF-8";
 
+@font-face {
+    font-family: 'myfont';
+    src: url("../fonts/851MkPOP.ttf")
+}
+
 /* メニューバー */
-#column1 {
-  border: 1px solid #bd1515;
-  background-color: #ffc5c5;
+#menu_ber {
+  height: 50px;
 }
 
-#column2 {
-  border: 1px solid #f27200;
-  background-color: #ffd89b;
-}
 
-#column3 {
-  border: 1px solid #889100;
-  background-color: #f4ff42;
-}
-
-#column4 {
-  border: 1px solid #58b300;
-  background-color: #c5f09b;
-}
 
 /* メインコンテンツ */
-.container-fluid {
-  background-image: url("../img/013_53a2db488d2d5e9ac76d1b9239d9b603.gif");
+
+/* 背景 */
+#back_img {
+  padding: 0px;
+}
+
+.jumbotron {
+  padding-top: 0px;
+	background: url("../img/038.jpg");
+	background-size: cover;
+	background-position: 50% 50%;
+  height: 1000px;
+  z-index: 0;
+  filter: blur(0.5px);
+}
+
+
+/* フロントタイトル */
+#title_box {
+  position: absolute;
+}
+
+#title {
+  text-align: center;
+  margin-top: 100px;
+  color: #ffffff;
+  font-family: "myfont";
+  font-size: 80px;
+}
+
+#title2 {
+  text-align: center;
+  margin-top: 30px;
+  color: #ffffff;
+  font-family: "myfont";
+  font-size: 80px;
 }
