@@ -1,38 +1,121 @@
-<!DOCTYPE html>
-<html lang="jp">
+<!DOCTYPE HTML>
+<html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/test.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="js/jquery-3.4.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Kosugi+Maru|M+PLUS+1p|M+PLUS+Rounded+1c|Permanent+Marker&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+    <script type="text/javascript" src="https://github.com/nagix/chartjs-plugin-streaming/releases/download/v1.2.0/chartjs-plugin-streaming.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.1.0/pusher.js"></script>
+    
+    <script>
+    </script>
 </head>
-
 <body>
-  <div class="container-fluid">
-    <!-- メニューバー -->
-    <div class="row" id="menu_ber">
-      <div class="col-12" id="column1">
-        <img src="/img/901de9e1e41ee350423565076f6e75ab.png">
-      </div>
-    </div>
 
-    <!-- メインコンテンツ -->
-    <div class="row" id="main">
+    <!-- グラフを表示する領域 -->
+    <canvas id="Bitflyer"></canvas>
 
-      <div class="col-12" id="back_img">
-        <!-- 背景 -->
-        <div class="jumbotron"></div>
-      </div>
+    <!-- データ入れる配列 -->
+    <script type="text/javascript">
+    var buf = {};
+    buf['Bitflyer'] = [[], []];
 
-      <div class="col-12" id="title_box">
-        <h1 id="title">物語は、</h1>
-        <h1 id="title2">声を上げて生まれ変わる。</h1>
-      </div>
+    </script>
 
-    </div>
+    <!-- グラフに必要なデータを取得するjavascript -->
+	<script>
+        // sleep関数を作る
+        function sleep(waitMsec) {
+        var startMsec = new Date();
+ 
+        // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+        while (new Date() - startMsec < waitMsec);
+        }
 
-  </div>
+        const channelName = "lightning_ticker_BTC_JPY";
+                  
+        // note: reconnection handling needed.
+        // websocketのインスタンスを作成
+        const ws = new WebSocket("wss://ws.lightstream.bitflyer.com/json-rpc");
+
+        // イベントは開いたとき
+        ws.addEventListener("open", () => {
+            ws.send(JSON.stringify({
+                method: "subscribe",
+                params: {
+                    channel: channelName
+                }, id: 123
+            }));
+        });
+
+        // msgEventは引数の名前
+        ws.addEventListener("message", msgEvent => {
+            const data = JSON.parse(msgEvent.data);
+            //document.write(data.params.message.total_ask_depth + "\n");
+            if (data.id === 123) {
+                console.log("subscribed!");
+            }
+
+            // bufに値を設定する
+            if (data.params && data.params.channel && data.params.message) {    
+                buf['Bitflyer'][0].push({
+                    x: Date.now(),
+                    y: data.params.message.ltp         // 価格（米ドル）
+                });
+                //document.write(data.params.message.timestamp)
+            }
+        });
+
+    </script>
+
+    <script>
+        var id = 'Bitflyer';
+        // チャートを2Dで表示
+        var ctx = document.getElementById(id).getContext('2d');
+
+        // チャートのオブジェクトを作る
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    data: [],
+                    label: 'ltp',                     // 買い取引データ
+                    borderColor: 'rgb(255, 99, 132)', // 線の色
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // 塗りの色
+                    fill: false,                      // 塗りつぶさない
+                    lineTension: 0                    // 直線
+                }]
+            },
+            // オプションの設定
+            options: {
+                // チャートのタイトル
+                title: {
+                text: 'BTC/JPY (' + id + ')', display: true
+                },
+                scales: {
+                // X軸にそってスクロール
+                xAxes: [{ type: 'realtime' }]
+                },
+                plugins: {
+                    streaming: {
+                        duration: 30000, // 300000ミリ秒（5分）のデータを表示
+                        onRefresh: function(chart) { // データ更新用コールバック
+                            Array.prototype.push.apply(
+                            chart.data.datasets[0].data, buf[id][0] // データをチャートに追加
+                            );           
+                            
+                            buf[id] = [[], []]; // バッファをクリア
+                        }
+                    }
+                }
+            }
+        });
+</script>
+
 </body>
 </html>
